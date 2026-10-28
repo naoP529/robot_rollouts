@@ -6,6 +6,12 @@ readme = "README.md"
 requires-python = ">=3.10,<3.14"
 dependencies = [
     "genesis-world>=1.4.5",
+    "google-api-python-client>=2.201.0",
+    "google-auth-httplib2>=0.4.4",
+    "google-auth-oauthlib>=1.5.0",
     "tensordict>=0.15.3",
     "torch>=2.14.1",
+    "tqdm>=4.70.1",
+    "transformers>=5.20.2",
+    "trimesh>=5.2.0",
 ]
