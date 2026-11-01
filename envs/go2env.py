@@ -1,9 +1,16 @@
 import math
 
+import numpy as np
 import torch
 
 import genesis as gs
-from genesis.utils.geom import quat_to_xyz, transform_by_quat, inv_quat, transform_quat_by_quat
+from genesis.utils.geom import inv_quat, pos_lookat_up_to_T, quat_to_xyz, transform_by_quat, transform_quat_by_quat
+
+HEAD_CAM_POS = (0.335, 0.0, 0.03)
+HEAD_CAM_LOOKAT = (2.285, 0.0, 0.01)
+HEAD_CAM_UP = (0.0, 0.0, 1.0)
+HEAD_CAM_FOV = 70.0
+HEAD_CAM_RES = (1920, 1080)
 
 
 class Go2Env:
@@ -99,6 +106,17 @@ class Go2Env:
             ),
         )
 
+        self.head_cam_res = tuple(self.env_cfg.get("head_cam_res", HEAD_CAM_RES))
+        self.head_cam_fov = float(self.env_cfg.get("head_cam_fov", HEAD_CAM_FOV))
+        self.camera = self.scene.add_camera(
+            res=self.head_cam_res,
+            pos=HEAD_CAM_POS,
+            lookat=HEAD_CAM_LOOKAT,
+            up=HEAD_CAM_UP,
+            fov=self.head_cam_fov,
+            GUI=False,
+        )
+
         self.scene.build(
             n_envs=num_envs,
             env_spacing=(0.0, 0.0) if follow_env0 or not show_viewer else (2.0, 2.0),
@@ -106,10 +124,18 @@ class Go2Env:
         )
         if follow_env0:
             self.scene.viewer.follow_entity(self.robot)
+        offset_T = pos_lookat_up_to_T(
+            np.asarray(HEAD_CAM_POS, dtype=np.float64),
+            np.asarray(HEAD_CAM_LOOKAT, dtype=np.float64),
+            np.asarray(HEAD_CAM_UP, dtype=np.float64),
+        )
+        self.camera.attach(self.robot.get_link("base"), offset_T)
+        self.camera.move_to_attach()
 
-        # names to indices
+        # names to indices. dofs_idx_local for set_dofs_kp/kv and get_dofs_position/velocity below
+        # is entity-local, not scene-global, so the robot's own dof_start must be subtracted.
         self.motors_dof_idx = torch.tensor(
-            [self.robot.get_joint(name).dof_start for name in self.env_cfg["joint_names"]],
+            [self.robot.get_joint(name).dof_start - self.robot.dof_start for name in self.env_cfg["joint_names"]],
             dtype=gs.tc_int,
             device=gs.device,
         )
@@ -208,6 +234,16 @@ class Go2Env:
 
     def get_observations(self):
         return self.obs_buf.clone()
+
+    def render(self, rgb=True, depth=False, segmentation=False, normal=False, colorize_seg=False):
+        self.camera.move_to_attach()
+        return self.camera.render(
+            rgb=rgb,
+            depth=depth,
+            segmentation=segmentation,
+            colorize_seg=colorize_seg,
+            normal=normal,
+        )
 
     def _reset_idx(self, envs_idx=None):
         self.robot.set_qpos(self.init_qpos, envs_idx=envs_idx, zero_velocity=True, skip_forward=True)

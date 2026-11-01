@@ -1,7 +1,7 @@
 [project]
 name = "robot-rollouts"
 version = "0.1.0"
-description = "Add your description here"
+description = "Code as Policies を参考にした、Genesis World 上の Unitree Go2 がボールをアーチへ運ぶロールアウト基盤"
 readme = "README.md"
 requires-python = ">=3.10,<3.14"
 dependencies = [
@@ -9,6 +9,8 @@ dependencies = [
     "google-api-python-client>=2.201.0",
     "google-auth-httplib2>=0.4.4",
     "google-auth-oauthlib>=1.5.0",
+    "google-genai>=2.33.0",
+    "openai>=3.41.0",
     "tensordict>=0.15.3",
     "torch>=2.14.1",
     "tqdm>=4.70.1",

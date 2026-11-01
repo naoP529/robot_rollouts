@@ -18,3 +18,15 @@ token.json
 # Local caches
 .cache/
 temp/
+
+# Rollout logs
+cap/runs/
+cap/usages/
+cap_easymode/runs/
+cap_easymode/usages/
+
+# OWLv2 weights are too large for git; hosted on Hugging Face Hub instead (see README)
+weights/owlv2_finetuned/
+
+# Throwaway scripts
+scratch_*.py
