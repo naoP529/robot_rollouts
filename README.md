@@ -4,9 +4,8 @@
 軽量な歩行モデル・現在地予測モデル・物体検出モデルもColabで訓練し、使用している。
 データ収集用コード、訓練用コード(Notebook)も同包
 
-**現時点では `cap/` 単体ではまともに動かない。** 直近5回のロールアウトで5回とも失敗している
-(`ROLLOUT_REPORT.md` 参照)。原因は物体検出モデル(OWLv2のファインチューン)の誤検出率の高さと、
-`command2loc` による自己位置推定の不正確さで、スキルの改善だけでは解消しない根本原因になっている。
+**現時点では `cap/` 単体では動かない。** 直近5回のロールアウトで5回とも失敗している。原因は物体検出モデル(OWLv2のファインチューン)の誤検出率の高さと、
+`command2loc` の自分の位置推定の不正確さにあり、この二つのモデルの精度が上がらない限り失敗し続けると思う。
 
 そのため当面は `cap_easymode/`(シミュレータから正確な座標を直接取得し、OWLv2・`command2loc` を
 使わないバージョン)を使うこと。`rollout.py` に `--easymode` を付けて実行すれば切り替わる。
@@ -34,9 +33,7 @@ uv run python rollout.py --easymode
 
    | 変数 | 用途 |
    |---|---|
-   | `LLM_API_KEY` | 必須。`cap/`・`cap_easymode/` のコード生成LLM呼び出しで使う(OpenAI SDK経由) |
-   | `LLM_BASE_URL` | 省略可。省略時はGemini(`https://generativelanguage.googleapis.com/v1beta/openai/`)。OpenAI互換の別エンドポイントに向ければGemini以外も使える |
-   | `LLM_MODEL_NAME` | 省略可。省略時は`gemini-4-argon` |
+   | `gemini_api_key` | 必須。`cap/` のコード生成LLM呼び出し(Gemini)で使う |
 
 3. 学習済みモデルの重み
 
