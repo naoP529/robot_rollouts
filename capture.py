@@ -1,3 +1,5 @@
+# もう使ってないファイル。TestEnv のカメラ出力を一枚保存する確認用で、他からは呼ばれない。
+
 import argparse
 from datetime import datetime
 from pathlib import Path

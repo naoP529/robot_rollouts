@@ -27,9 +27,10 @@ from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 from tqdm import tqdm
 
-from envs.test_env import ARCHES, BALLS, TestEnv
+from envs.cfg.model_data import ARCHES, BALLS
+from envs.test_env import TestEnv
 from obj_gen.fetch_ground_textures import drive_service, ensure_path
-from utils.lights import LIGHTING_PRESETS
+from envs.presets.lights import LIGHTING_PRESETS
 
 N_ENVS = 40
 N_SCENES = 20

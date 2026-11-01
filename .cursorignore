@@ -1,0 +1,10 @@
+.venv/
+.cache/
+weights/
+assets/
+captures/
+*.safetensors
+*.pth
+*.npy
+*.glb
+*.bin

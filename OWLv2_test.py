@@ -8,7 +8,8 @@ import torch
 from PIL import Image
 from transformers import Owlv2ForObjectDetection, Owlv2Processor
 
-from envs.test_env import ARCHES, BALLS, TestEnv
+from envs.cfg.model_data import ARCHES, BALLS
+from envs.test_env import TestEnv
 from utils.seg_bbox import bboxes_from_seg
 
 # name, query, path. nameはscene.entitiesのnameと前方一致
